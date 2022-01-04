@@ -127,21 +127,20 @@ impl Config {
 
         // If we're on a Linux distro with journald, try logging to the system
         // journal so we don't interfere with text output.
-        let journald = tracing_journald::layer().ok();
+        // let journald = tracing_journald::layer().ok();
+        // let journald = None;
 
         // Otherwise, log to stderr and rely on the user redirecting output.
-        let fmt = if journald.is_none() {
+        let fmt =
             Some(
                 tracing_subscriber::fmt::layer()
                     .with_writer(std::io::stderr)
                     .with_ansi(atty::is(atty::Stream::Stderr)),
-            )
-        } else {
-            None
-        };
+            );
+
 
         tracing_subscriber::registry()
-            .with(journald)
+            // .with(journald)
             .with(fmt)
             .with(filter)
             .try_init()?;
